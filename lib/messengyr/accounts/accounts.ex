@@ -1,6 +1,6 @@
 defmodule Messengyr.Accounts do
   import Ecto.Changeset
-  alias Messengyr.User
+  alias Messengyr.Accounts.User
   alias Messengyr.Repo
   
   def create_user(params) do
