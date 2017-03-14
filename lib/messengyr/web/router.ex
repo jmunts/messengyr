@@ -18,6 +18,7 @@ defmodule Messengyr.Web.Router do
 
     get "/", PageController, :index
     get "/signup", PageController, :signup
+    post "/signup", PageController, :create_user
     get "/login", PageController, :login
   end
 
