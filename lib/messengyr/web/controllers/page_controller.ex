@@ -1,13 +1,31 @@
 defmodule Messengyr.Web.PageController do
   use Messengyr.Web, :controller
   alias Messengyr.Accounts
+  alias Messengyr.Accounts.Session
 
   def index(conn, _params) do
+    _user = Guardian.Plug.current_resource(conn)
+    
     render conn, "index.html"
   end
 
   def login(conn, _params) do
     render conn
+  end
+
+  def login_user(conn, %{"credentials" => credentials}) do
+    case Session.authenticate(credentials) do
+      {:ok, %{username: username} = user} ->
+        conn
+        |> Guardian.Plug.sign_in(user)
+        |> put_flash(:info, "Logged in as #{username}!")
+        |> render("login.html")
+        
+      {:error, message} ->
+        conn
+        |> put_flash(:error, message)
+        |> render("login.html")
+    end
   end
 
   def signup(conn, _params) do
