@@ -3,10 +3,12 @@ defmodule Messengyr.Web.PageController do
   alias Messengyr.Accounts
   alias Messengyr.Accounts.Session
 
+  plug Guardian.Plug.EnsureNotAuthenticated, [handler: __MODULE__] when action in [:login]
+
   def index(conn, _params) do
-    _user = Guardian.Plug.current_resource(conn)
+    changeset = Accounts.register_changeset()
     
-    render conn, "index.html"
+    render conn, user_changeset: changeset
   end
 
   def login(conn, _params) do
@@ -46,4 +48,19 @@ defmodule Messengyr.Web.PageController do
         |> render("signup.html", user_changeset: user_changeset)
     end
   end
+
+  def logout(conn, _params) do
+    conn
+    |> Guardian.Plug.sign_out
+    |> put_flash(:info, "Signed out successfully!")
+    |> redirect(to: "/")
+  end
+
+  def already_authenticated(conn, _params) do
+    conn
+    |> put_flash(:error, "Already logged in!")
+    |> redirect(to: "/")
+  end
+
+
 end
