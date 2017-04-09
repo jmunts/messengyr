@@ -16,6 +16,16 @@ defmodule Messengyr.Web.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+
+    plug Guardian.Plug.VerifyHeader, realm: "Bearer"
+    plug Guardian.Plug.LoadResource
+  end
+
+  scope "/api", Messengyr.Web do
+    pipe_through :api
+
+    resources "/users", UserController, only: [:show]
+    resources "/rooms", RoomController
   end
 
   scope "/", Messengyr.Web do

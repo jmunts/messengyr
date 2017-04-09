@@ -9,3 +9,26 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+alias Messengyr.{Chat, Repo, Accounts}
+alias Messengyr.Accounts.User
+
+{:ok, room} = Chat.create_room()
+
+me = Repo.get(User, 1)
+
+{:ok, counterpart} = Accounts.create_user(%{
+      "username" => "bob",
+      "email" => "bob@example.com",
+      "password" => "test"
+ })
+
+Chat.add_room_user(room, me)
+
+Chat.add_room_user(room, counterpart)
+
+Chat.add_message(%{
+      room: room,
+      user: me,
+      text: "Hello world!"
+})
